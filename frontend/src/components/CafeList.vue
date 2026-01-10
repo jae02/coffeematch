@@ -39,45 +39,86 @@ const selectCafe = (id) => {
 </script>
 
 <template>
-    <div class="space-y-6">
-        <!-- Search Bar -->
-        <div class="flex gap-2 justify-center">
-            <input 
-                v-model="keyword" 
-                @keyup.enter="fetchCafes"
-                placeholder="카페 검색..." 
-                class="border border-coffee-300 rounded-lg px-4 py-2 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
-            />
-            <button @click="fetchCafes" class="bg-coffee-600 text-white px-6 py-2 rounded-lg hover:bg-coffee-700 transition">
-                검색
-            </button>
+    <div class="space-y-0.5 bg-gray-50 pb-20"> <!-- Added padding for bottom nav -->
+        <!-- Search Area (Optional, since we have a dedicated search tab, we might keep a simple trigger or remove it. Keeping it as a quick entry) -->
+        <div class="p-4 bg-white sticky top-14 z-40 border-b border-gray-100 shadow-sm">
+            <div class="bg-gray-100 rounded-lg p-3 flex items-center gap-2 cursor-pointer text-gray-500 text-sm" @click="$emit('switch-tab', 'search')">
+                <span>🔍</span>
+                <span>근처 맛집, 카페 검색</span>
+            </div>
         </div>
 
-        <!-- Filter / Status -->
-        <div v-if="loading" class="text-center text-coffee-500">커피 내리는 중... ☕</div>
-        <div v-if="error" class="text-center text-red-500">{{ error }}</div>
+        <!-- Curation Banners / Categories -->
+        <div class="bg-white mb-2 pb-4">
+             <!-- Horizontal Categories -->
+             <div class="flex gap-4 overflow-x-auto px-4 py-2 custom-scrollbar">
+                 <button v-for="cat in ['전체', '스페셜티', '디저트', '뷰맛집', '공부하기 좋은', '데이트']" :key="cat" class="flex-shrink-0 flex flex-col items-center gap-1 min-w-[60px]">
+                     <div class="w-12 h-12 rounded-full bg-daangn-50 border border-daangn-100 flex items-center justify-center text-xl">☕</div>
+                     <span class="text-xs font-medium text-gray-700">{{cat}}</span>
+                 </button>
+             </div>
+             
+             <!-- Promo Banner -->
+             <div class="mx-4 mt-2 h-32 bg-daangn-500 rounded-xl flex items-center justify-center relative overflow-hidden">
+                 <div class="absolute inset-0 bg-gradient-to-r from-daangn-600 to-daangn-400 opacity-90"></div>
+                 <div class="relative text-white text-center">
+                     <h3 class="font-bold text-lg mb-1">이번 주 핫한 카페 🔥</h3>
+                     <p class="text-xs opacity-90">웨이팅 없이 즐기는 여유</p>
+                 </div>
+             </div>
+        </div>
 
-        <!-- Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Sort Filter -->
+        <div class="px-4 py-3 flex items-center justify-between bg-white border-b border-gray-100">
+             <span class="font-bold text-gray-900 text-sm">내 주변 추천 카페</span>
+             <div class="flex items-center gap-1 text-xs text-gray-500">
+                 <span>추천순</span>
+                 <span>∨</span>
+             </div>
+        </div>
+
+        <!-- Cafe Feed -->
+        <div v-if="loading" class="p-8 text-center text-gray-500">
+            로딩 중...
+        </div>
+        <div v-else-if="error" class="p-8 text-center text-red-500">
+            {{ error }}
+        </div>
+        <div v-else class="bg-white divide-y divide-gray-100">
             <div 
                 v-for="cafe in cafes" 
                 :key="cafe.id" 
-                class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-coffee-100"
+                class="flex p-4 border-b border-gray-100 cursor-pointer active:bg-gray-50 transition"
                 @click="selectCafe(cafe.id)"
             >
-                <img :src="cafe.imageUrl || 'https://placehold.co/600x400/e0cec7/5d4037?text=No+Image'" alt="Cafe Image" class="w-full h-48 object-cover"/>
-                <div class="p-5">
-                    <h3 class="text-xl font-bold text-coffee-800 mb-2">{{ cafe.name }}</h3>
-                    <p class="text-coffee-600 text-sm mb-4 line-clamp-2">{{ cafe.description }}</p>
-                    <div class="flex items-center text-sm text-coffee-500">
-                        <span>📍 {{ cafe.address }}</span>
+                <!-- Image -->
+                <div class="w-28 h-28 flex-shrink-0 bg-gray-200 rounded-xl overflow-hidden mr-4 border border-gray-100">
+                    <img :src="cafe.imageUrl || 'https://placehold.co/200x200/e0cec7/5d4037?text=No+Image'" alt="Cafe Image" class="w-full h-full object-cover"/>
+                </div>
+
+                <!-- Text Content -->
+                <div class="flex flex-col justify-between py-0.5 flex-grow">
+                    <div>
+                        <h3 class="text-base font-medium text-gray-900 mb-0.5 line-clamp-1">{{ cafe.name }}</h3>
+                        <p class="text-xs text-gray-500 mb-1 line-clamp-1">{{ cafe.address ? cafe.address.split(',')[0] : '위치 정보 없음' }}</p>
+                        <p class="text-sm text-gray-800 line-clamp-2 leading-snug">{{ cafe.description }}</p>
+                    </div>
+                    
+                    <div class="flex items-center justify-end text-xs text-gray-400 gap-1 mt-2">
+                         <!-- Like / Comment Counts (Mock) -->
+                         <div class="flex items-center gap-0.5">
+                            <span class="text-gray-400">💬</span> <span>{{ cafe.reviews ? cafe.reviews.length : 0 }}</span>
+                         </div>
+                         <div class="flex items-center gap-0.5 ml-2">
+                            <span class="text-gray-400">🤍</span> <span>12</span>
+                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div v-if="!loading && cafes.length === 0" class="text-center text-gray-400 py-10">
-            취향에 맞는 카페가 없습니다.
+        <div v-if="!loading && cafes.length === 0" class="text-center py-20">
+            <p class="text-gray-500">검색 결과가 없습니다.</p>
         </div>
     </div>
 </template>

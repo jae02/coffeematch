@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
 body {
-  @apply bg-coffee-50 text-coffee-900;
+  font-family: 'Noto Sans KR', sans-serif;
+  @apply bg-gray-50 text-gray-900;
 }
