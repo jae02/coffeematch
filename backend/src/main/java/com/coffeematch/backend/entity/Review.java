@@ -26,6 +26,17 @@ public class Review {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    public Review() {
+    }
+
+    public Review(Cafe cafe, String author, Integer rating, String content) {
+        this.cafe = cafe;
+        this.author = author;
+        this.rating = rating;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }

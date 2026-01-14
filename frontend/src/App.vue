@@ -1,12 +1,14 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import CafeList from './components/CafeList.vue';
 import CafeDetail from './components/CafeDetail.vue';
 import Search from './components/Search.vue';
 import Saved from './components/Saved.vue';
 import MyPage from './components/MyPage.vue';
+import AdminDashboard from './components/AdminDashboard.vue';
+import AdminLogin from './components/AdminLogin.vue'; // [NEW]
 
-const currentView = ref('list'); // list, detail, search, saved, mypage
+const currentView = ref('list');
 const selectedCafeId = ref(null);
 
 const showDetail = (id) => {
@@ -15,53 +17,60 @@ const showDetail = (id) => {
 };
 
 const showList = () => {
-    currentView.value = 'list';
-    selectedCafeId.value = null;
-    window.scrollTo(0, 0);
+  currentView.value = 'list';
 };
 
 const changeTab = (tab) => {
-    currentView.value = tab;
-    selectedCafeId.value = null;
-    window.scrollTo(0, 0);
+  currentView.value = tab;
 };
+
+// Handle Admin Navigation
+const showAdminLogin = () => {
+  currentView.value = 'admin-login';
+};
+
+const handleAdminLoginSuccess = () => {
+  currentView.value = 'admin';
+};
+
+// Check for #admin hash on load
+onMounted(() => {
+  if (window.location.hash === '#admin') {
+    currentView.value = 'admin-login';
+  }
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#admin') {
+      currentView.value = 'admin-login';
+    }
+  });
+});
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 text-gray-900 pb-20">
-    <!-- Header (Only visual on Home/List view, other components have their own headers) -->
-    <header v-if="currentView === 'list'" class="bg-white sticky top-0 z-50 border-b border-gray-100">
-      <div class="max-w-2xl mx-auto px-4 h-14 flex justify-between items-center">
-        <!-- Left: Logo -->
-        <div class="flex items-center gap-1 cursor-pointer" @click="showList">
-            <h1 class="text-xl font-bold text-daangn-500">커피매치</h1>
-            <span class="text-xs text-gray-400 border border-gray-200 rounded px-1 ml-1">Beta</span>
+  <div class="min-h-screen bg-gray-50 font-sans text-gray-900">
+    <!-- Header (Hidden in Admin Mode) -->
+    <header v-if="currentView !== 'admin' && currentView !== 'admin-login'" class="bg-white sticky top-0 z-10 border-b border-gray-100 shadow-sm safe-area-top">
+      <div class="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+        <h1 class="text-xl font-black tracking-tighter text-daangn-500 cursor-pointer" @click="currentView = 'list'">CoffeeMatch</h1>
+        <div class="flex gap-4">
+            <button @click="currentView = 'search'" :class="currentView === 'search' ? 'text-gray-900' : 'text-gray-400'">🔍</button>
         </div>
-
-        <!-- Right: Actions -->
-        <nav class="flex items-center gap-4">
-            <button class="p-2 hover:bg-gray-100 rounded-full transition relative">
-                <span class="text-xl">🔔</span>
-                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-            </button>
-            <button class="p-2 hover:bg-gray-100 rounded-full transition">
-                 <span class="text-xl">☰</span>
-            </button>
-        </nav>
       </div>
     </header>
 
     <!-- Content Area -->
-    <main class="max-w-2xl mx-auto">
+    <main :class="(currentView === 'admin' || currentView === 'admin-login') ? 'w-full h-screen' : 'max-w-2xl mx-auto'">
       <CafeList v-if="currentView === 'list'" @select-cafe="showDetail" @switch-tab="changeTab" />
       <CafeDetail v-else-if="currentView === 'detail'" :id="selectedCafeId" @back="showList" />
       <Search v-else-if="currentView === 'search'" />
       <Saved v-else-if="currentView === 'saved'" />
-      <MyPage v-else-if="currentView === 'mypage'" />
+      <MyPage v-else-if="currentView === 'mypage'" @open-admin="showAdminLogin" />
+      <AdminDashboard v-else-if="currentView === 'admin'" @close="changeTab('list')" />
+      <AdminLogin v-else-if="currentView === 'admin-login'" @login-success="handleAdminLoginSuccess" @back="changeTab('mypage')" />
     </main>
     
     <!-- CatchTable Style Bottom Nav -->
-    <nav v-if="currentView !== 'detail'" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-16 flex justify-around items-center max-w-2xl mx-auto z-40 safe-area-bottom">
+    <nav v-if="currentView !== 'detail' && currentView !== 'admin' && currentView !== 'admin-login'" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-16 flex justify-around items-center max-w-2xl mx-auto z-40 safe-area-bottom">
         <!-- Home -->
         <button 
             @click="changeTab('list')" 

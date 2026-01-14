@@ -27,8 +27,15 @@ const handleLogin = async () => {
         
         emit('login-success', user);
     } catch (err) {
-        error.value = '이메일 또는 비밀번호가 올바르지 않습니다.';
         console.error(err);
+        if (err.response && err.response.data) {
+            const data = err.response.data;
+            error.value = typeof data === 'string' ? data : JSON.stringify(data);
+        } else if (err.message) {
+             error.value = err.message;
+        } else {
+            error.value = '로그인 중 오류가 발생했습니다.';
+        }
     }
 };
 </script>

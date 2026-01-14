@@ -44,3 +44,10 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+*.xlsx
+*.csv
+*.json
+restart.sh
+/docs/
+/crawled_sample_*

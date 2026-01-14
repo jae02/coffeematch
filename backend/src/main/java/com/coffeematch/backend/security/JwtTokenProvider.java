@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${jwt.secret:defaultSecretKeyShouldBeLongEnoughToWorkWithSignatureAlgorithm}")
@@ -28,6 +26,10 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     private Key key;
+
+    public JwtTokenProvider(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostConstruct
     protected void init() {

@@ -1,6 +1,7 @@
 package com.coffeematch.backend.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Cafe {
 
     @Id
@@ -23,11 +25,16 @@ public class Cafe {
 
     private String imageUrl;
 
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Menu> menus = new ArrayList<>();
 
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Review> reviews = new ArrayList<>();
+
+    private Integer bookmarkCount = 0;
+    private Integer reviewCount = 0;
+    private Double internalRatingAvg = 0.0;
 
     public Long getId() {
         return id;
@@ -91,5 +98,29 @@ public class Cafe {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public Integer getBookmarkCount() {
+        return bookmarkCount;
+    }
+
+    public void setBookmarkCount(Integer bookmarkCount) {
+        this.bookmarkCount = bookmarkCount;
+    }
+
+    public Integer getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(Integer reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public Double getInternalRatingAvg() {
+        return internalRatingAvg;
+    }
+
+    public void setInternalRatingAvg(Double internalRatingAvg) {
+        this.internalRatingAvg = internalRatingAvg;
     }
 }

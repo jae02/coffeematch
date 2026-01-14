@@ -104,6 +104,10 @@ const handleLogout = () => {
 
                 <!-- Menu List -->
                 <div class="bg-white rounded-xl overflow-hidden border border-gray-100 mt-4">
+                    <button @click="$emit('open-admin')" class="w-full py-4 text-left px-4 hover:bg-gray-50 text-gray-500 font-medium border-t border-gray-100 flex justify-between items-center group">
+                        <span>🔐 관리자 전용 (Admin Access)</span>
+                        <span class="text-gray-300 group-hover:text-gray-500 transition-colors">→</span>
+                    </button>
                     <button class="w-full flex justify-between items-center p-4 border-b border-gray-50 hover:bg-gray-50">
                         <span class="text-gray-800">이벤트</span>
                         <span class="text-gray-400">></span>
