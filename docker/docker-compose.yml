@@ -12,3 +12,28 @@ services:
       - ./mysql_data:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
+
+  backend:
+    build: ../backend
+    container_name: coffeematch-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/coffeematch?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: '1234'
+    depends_on:
+      - db
+    restart: always
+
+  frontend:
+    build: ../frontend
+    container_name: coffeematch-frontend
+    ports:
+      - "5173:80"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: always

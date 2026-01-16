@@ -24,6 +24,9 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    private String imageUrl;
+    private String imageCategory; // GENERAL, STORE, MENU
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Review() {
@@ -75,6 +78,22 @@ public class Review {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageCategory() {
+        return imageCategory;
+    }
+
+    public void setImageCategory(String imageCategory) {
+        this.imageCategory = imageCategory;
     }
 
     public LocalDateTime getCreatedAt() {

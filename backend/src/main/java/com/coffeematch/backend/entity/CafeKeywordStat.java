@@ -45,6 +45,10 @@ public class CafeKeywordStat {
         return count;
     }
 
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public void incrementCount() {
         this.count++;
     }

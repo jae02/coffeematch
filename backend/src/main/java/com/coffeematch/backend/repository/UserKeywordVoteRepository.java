@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserKeywordVoteRepository extends JpaRepository<UserKeywordVote, Long> {
     boolean existsByUserIdAndCafeIdAndKeywordId(Long userId, Long cafeId, Long keywordId);
+
+    java.util.Optional<UserKeywordVote> findByUserIdAndCafeId(Long userId, Long cafeId);
 }

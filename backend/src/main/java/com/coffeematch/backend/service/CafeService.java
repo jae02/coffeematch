@@ -14,6 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Service
 public class CafeService {
@@ -77,8 +84,18 @@ public class CafeService {
     public void voteKeyword(String email, Long cafeId, Long keywordId) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (userKeywordVoteRepository.existsByUserIdAndCafeIdAndKeywordId(user.getId(), cafeId, keywordId)) {
-            throw new RuntimeException("이미 투표한 키워드입니다.");
+        // 0. 기존 투표 확인 (카페당 1인 1투표 정책)
+        Optional<UserKeywordVote> existingVote = userKeywordVoteRepository.findByUserIdAndCafeId(user.getId(), cafeId);
+        if (existingVote.isPresent()) {
+            UserKeywordVote oldVote = existingVote.get();
+            // 기존 투표 키워드 통계 감소
+            cafeKeywordStatRepository.findByCafeIdAndKeywordId(cafeId, oldVote.getKeyword().getId())
+                    .ifPresent(stat -> {
+                        stat.setCount(Math.max(0, stat.getCount() - 1));
+                        cafeKeywordStatRepository.save(stat);
+                    });
+            // 기존 투표 삭제
+            userKeywordVoteRepository.delete(oldVote);
         }
 
         Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(() -> new RuntimeException("Cafe not found"));
@@ -125,18 +142,58 @@ public class CafeService {
     }
 
     @Transactional
-    public void addReview(String email, Long cafeId, ReviewRequestDto reviewDto) {
+    public void addReview(String email, Long cafeId, ReviewRequestDto reviewDto, MultipartFile image, String category) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(() -> new RuntimeException("Cafe not found"));
 
         Review review = new Review(cafe, user.getNickname(), reviewDto.getRating(), reviewDto.getContent());
+
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = saveFile(image);
+            review.setImageUrl(imageUrl);
+        }
+        review.setImageCategory(category);
+
         reviewRepository.save(review);
 
-        // Update cafe review count and average rating (simple implementation)
+        // Update cafe review count
         cafe.setReviewCount(cafe.getReviewCount() + 1);
-        // Average calculation omitted for simplicity in this step, or can be
-        // implemented later
         cafeRepository.save(cafe);
+    }
+
+    @Transactional
+    public void updateCafeImage(Long cafeId, MultipartFile image) {
+        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(() -> new RuntimeException("Cafe not found"));
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = saveFile(image);
+            cafe.setImageUrl(imageUrl);
+            cafeRepository.save(cafe);
+        }
+    }
+
+    private String saveFile(MultipartFile file) {
+        try {
+            String uploadDir = "uploads/";
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String originalFilename = file.getOriginalFilename();
+            String extension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            String filename = UUID.randomUUID().toString() + extension;
+            Path filePath = uploadPath.resolve(filename);
+
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return "/uploads/" + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store file", e);
+        }
     }
 
     // Admin Methods
