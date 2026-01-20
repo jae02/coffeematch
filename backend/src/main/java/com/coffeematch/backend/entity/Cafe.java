@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,24 @@ public class Cafe {
     private Integer bookmarkCount = 0;
     private Integer reviewCount = 0;
     private Double internalRatingAvg = 0.0;
+
+    // Platform tracking columns
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private Platform sourcePlatform;
+
+    @Column(length = 100)
+    private String platformId;
+
+    private LocalDateTime lastSyncedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private CafeStatus status = CafeStatus.ACTIVE;
+
+    // Coordinates for deduplication
+    private Double latitude;
+    private Double longitude;
 
     public Long getId() {
         return id;
@@ -122,5 +141,53 @@ public class Cafe {
 
     public void setInternalRatingAvg(Double internalRatingAvg) {
         this.internalRatingAvg = internalRatingAvg;
+    }
+
+    public Platform getSourcePlatform() {
+        return sourcePlatform;
+    }
+
+    public void setSourcePlatform(Platform sourcePlatform) {
+        this.sourcePlatform = sourcePlatform;
+    }
+
+    public String getPlatformId() {
+        return platformId;
+    }
+
+    public void setPlatformId(String platformId) {
+        this.platformId = platformId;
+    }
+
+    public LocalDateTime getLastSyncedAt() {
+        return lastSyncedAt;
+    }
+
+    public void setLastSyncedAt(LocalDateTime lastSyncedAt) {
+        this.lastSyncedAt = lastSyncedAt;
+    }
+
+    public CafeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CafeStatus status) {
+        this.status = status;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

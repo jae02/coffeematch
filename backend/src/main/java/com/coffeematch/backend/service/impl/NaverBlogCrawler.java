@@ -28,36 +28,63 @@ public class NaverBlogCrawler implements CrawlerService {
 
             Document doc = Jsoup.connect(url)
                     .userAgent(
-                            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                            "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1")
                     .get();
 
-            Elements posts = doc.select(".view_wrap");
+            // Try multiple container selectors
+            Elements posts = doc.select("li.bx, .view_wrap, .detail_box");
 
             for (Element post : posts) {
                 if (results.size() >= limit)
                     break;
 
                 try {
-                    String title = post.select(".title_link").text();
-                    String link = post.select(".title_link").attr("href");
-                    String snippet = post.select(".dsc_link").text();
-                    String date = post.select(".sub").text();
+                    // Try multiple title selectors
+                    Element titleEl = post.select(".title_link, .total_tit, .tit, .api_txt_lines").first();
+                    if (titleEl == null)
+                        continue;
 
-                    // Image might be in a thumb container
+                    String title = titleEl.text();
+                    String link = titleEl.attr("href");
+
+                    // If href is empty on the text element, try finding parent 'a' or 'a' inside
+                    if (link.isEmpty()) {
+                        if (titleEl.tagName().equals("a")) {
+                            link = titleEl.attr("href");
+                        } else {
+                            Element parentLink = titleEl.parent();
+                            if (parentLink != null && parentLink.tagName().equals("a")) {
+                                link = parentLink.attr("href");
+                            }
+                        }
+                    }
+
+                    // Fallback: search for any 'a' tag in the post
+                    if (link.isEmpty()) {
+                        Element anyLink = post.select("a").first();
+                        if (anyLink != null)
+                            link = anyLink.attr("href");
+                    }
+
+                    // Skip invalid results (UI elements like 'Sort', 'Filter')
+                    if (link.isEmpty() || title.length() < 3 || link.equals("#"))
+                        continue;
+
+                    // Try multiple snippet selectors
+                    String snippet = post.select(".dsc_link, .dsc_txt, .api_txt_lines.dsc_txt, .total_dsc").text();
+
+                    // Image
                     String imageUrl = "";
-                    Element imgEl = post.select(".thumb img").first();
+                    Element imgEl = post.select(".thumb img, .thumb_area img").first();
                     if (imgEl != null) {
                         imageUrl = imgEl.attr("src");
                     }
 
-                    // Attempt to extract Cafe Name from Title (Naive approach: take first 2 words
-                    // or just title)
-                    // In a real scenario, NLP or specific parsing logic is better.
                     String cafeName = title;
 
                     results.add(CrawlDataDto.builder()
                             .source("NAVER_BLOG")
-                            .name(cafeName) // Blog title often contains the name
+                            .name(cafeName)
                             .title(title)
                             .content(snippet)
                             .url(link)

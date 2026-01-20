@@ -35,7 +35,8 @@ public class SimpleCrawlController {
     }
 
     @GetMapping
-    public ResponseEntity<Resource> generateSimple(@RequestParam String keyword) {
+    public ResponseEntity<Resource> generateSimple(@RequestParam String keyword,
+            @RequestParam(defaultValue = "5") int limit) {
         try {
             // Debug Probe
             try {
@@ -47,7 +48,7 @@ public class SimpleCrawlController {
 
             List<CrawlDataDto> allData = new ArrayList<>();
             // Use Jsoup crawler
-            allData.addAll(naverBlogCrawler.crawl(keyword, 5));
+            allData.addAll(naverBlogCrawler.crawl(keyword, limit));
 
             // Generate CSV
             String filePath = "/tmp/simple_crawl_" + System.currentTimeMillis() + ".csv";

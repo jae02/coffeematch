@@ -113,7 +113,7 @@ const deleteReview = async (id) => {
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-800 text-white flex flex-col shadow-xl z-20">
             <div class="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-900">
-                <h1 class="text-lg font-black tracking-wider uppercase">CoffeeAdmin</h1>
+                <h1 class="text-lg font-black tracking-wider uppercase">Crema Admin</h1>
             </div>
             
             <nav class="flex-1 p-4 space-y-2">

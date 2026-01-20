@@ -7,17 +7,10 @@ export default {
     theme: {
         extend: {
             colors: {
-                daangn: {
-                    50: '#FBF7F4',  // Warm off-white
-                    100: '#F5EBE0', // Light beige
-                    200: '#EBD5C1',
-                    300: '#DDBFA2',
-                    400: '#CFA883',
-                    500: '#A67B5B', // Primary Wood (Warm Brown)
-                    600: '#8D6345',
-                    700: '#734E35',
-                    800: '#5A3B28',
-                    900: '#422A1C',
+                crema: {
+                    espresso: '#3C2A21', // Primary: Deep Espresso (Logo, Keys, Text)
+                    crema: '#D4A373',    // Secondary: Golden Crema (Icons, Ratings)
+                    latte: '#F5EBE0',    // Background: Soft Latte (Backgrounds)
                 },
                 gray: {
                     50: '#F8F9FA',

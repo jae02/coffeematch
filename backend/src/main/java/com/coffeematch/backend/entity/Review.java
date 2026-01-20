@@ -29,6 +29,16 @@ public class Review {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    // Platform tracking columns
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private Platform sourcePlatform;
+
+    @Column(length = 100)
+    private String platformReviewId;
+
+    private LocalDateTime crawledAt;
+
     public Review() {
     }
 
@@ -102,5 +112,29 @@ public class Review {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Platform getSourcePlatform() {
+        return sourcePlatform;
+    }
+
+    public void setSourcePlatform(Platform sourcePlatform) {
+        this.sourcePlatform = sourcePlatform;
+    }
+
+    public String getPlatformReviewId() {
+        return platformReviewId;
+    }
+
+    public void setPlatformReviewId(String platformReviewId) {
+        this.platformReviewId = platformReviewId;
+    }
+
+    public LocalDateTime getCrawledAt() {
+        return crawledAt;
+    }
+
+    public void setCrawledAt(LocalDateTime crawledAt) {
+        this.crawledAt = crawledAt;
     }
 }

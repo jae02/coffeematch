@@ -53,14 +53,14 @@ const selectCafe = (id) => {
              <!-- Horizontal Categories -->
              <div class="flex gap-4 overflow-x-auto px-4 py-2 custom-scrollbar">
                  <button v-for="cat in ['전체', '스페셜티', '디저트', '뷰맛집', '공부하기 좋은', '데이트']" :key="cat" class="flex-shrink-0 flex flex-col items-center gap-1 min-w-[60px]">
-                     <div class="w-12 h-12 rounded-full bg-daangn-50 border border-daangn-100 flex items-center justify-center text-xl">☕</div>
+                     <div class="w-12 h-12 rounded-full bg-crema-latte border border-crema-latte flex items-center justify-center text-xl">☕</div>
                      <span class="text-xs font-medium text-gray-700">{{cat}}</span>
                  </button>
              </div>
              
              <!-- Promo Banner -->
-             <div class="mx-4 mt-2 h-32 bg-daangn-500 rounded-xl flex items-center justify-center relative overflow-hidden">
-                 <div class="absolute inset-0 bg-gradient-to-r from-daangn-600 to-daangn-400 opacity-90"></div>
+             <div class="mx-4 mt-2 h-32 bg-crema-espresso rounded-xl flex items-center justify-center relative overflow-hidden">
+                 <div class="absolute inset-0 bg-gradient-to-r from-crema-espresso to-crema-crema opacity-90"></div>
                  <div class="relative text-white text-center">
                      <h3 class="font-bold text-lg mb-1">이번 주 핫한 카페 🔥</h3>
                      <p class="text-xs opacity-90">웨이팅 없이 즐기는 여유</p>

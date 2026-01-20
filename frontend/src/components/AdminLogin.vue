@@ -39,7 +39,7 @@ const handleLogin = async () => {
                 <div class="inline-block p-3 rounded-full bg-blue-600/20 mb-4">
                     <span class="text-3xl">🛡️</span>
                 </div>
-                <h1 class="text-2xl font-black text-white tracking-widest uppercase mb-1">CoffeeAdmin</h1>
+                <h1 class="text-2xl font-black text-white tracking-widest uppercase mb-1">Crema Admin</h1>
                 <p class="text-slate-400 text-sm">Authorized Personnel Only</p>
             </div>
 
@@ -68,7 +68,7 @@ const handleLogin = async () => {
 
             <div class="mt-8 text-center border-t border-slate-700 pt-6">
                 <button @click="$emit('back')" class="text-slate-500 hover:text-slate-300 text-sm font-bold transition-colors">
-                    ← Back to CoffeeMatch
+                    ← Back to Crema
                 </button>
             </div>
         </div>

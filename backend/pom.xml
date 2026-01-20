@@ -11,8 +11,8 @@
 	<groupId>com.coffeematch</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>coffeematch-backend</name>
-	<description>Demo project for Coffee Match</description>
+	<name>crema-backend</name>
+	<description>Demo project for Crema</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

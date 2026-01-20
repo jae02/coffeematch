@@ -315,7 +315,7 @@ const filteredPhotos = computed(() => {
                         <!-- Internal -->
                         <div class="flex-1 min-w-[100px] bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center">
                             <div class="text-[10px] text-gray-400 font-bold mb-1">COFFEEMATCH</div>
-                            <div class="text-xl font-bold text-daangn-500">{{ (cafe.internalRatingAvg || 0).toFixed(1) }}</div>
+                            <div class="text-xl font-bold text-crema-espresso">{{ (cafe.internalRatingAvg || 0).toFixed(1) }}</div>
                             <div class="text-[10px] text-gray-400">리뷰 {{ cafe.reviewCount }}</div>
                         </div>
                         <!-- External Platforms -->
@@ -336,11 +336,11 @@ const filteredPhotos = computed(() => {
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <h3 class="text-sm font-bold text-gray-700">이 카페의 특징</h3>
-                        <button @click="showVoteModal = true" class="text-xs text-daangn-500 font-bold underline">투표하기</button>
+                        <button @click="showVoteModal = true" class="text-xs text-crema-espresso font-bold underline">투표하기</button>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <div v-for="stat in topKeywords" :key="stat.id" class="bg-daangn-50 text-daangn-700 px-3 py-1 rounded-full text-xs font-bold border border-daangn-100">
-                            #{{ stat.keyword.name }} <span class="text-daangn-400 ml-1">{{ stat.count }}</span>
+                        <div v-for="stat in topKeywords" :key="stat.id" class="bg-crema-latte text-crema-espresso px-3 py-1 rounded-full text-xs font-bold border border-crema-latte">
+                            #{{ stat.keyword.name }} <span class="text-crema-crema ml-1">{{ stat.count }}</span>
                         </div>
                         <div v-if="topKeywords.length === 0" class="text-xs text-gray-400">아직 투표된 키워드다 없습니다. 첫 투표를 해주세요!</div>
                     </div>
@@ -366,7 +366,7 @@ const filteredPhotos = computed(() => {
                 <div class="space-y-3">
                     <div v-for="menu in sortedMenus" :key="menu.id" class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
-                             <span v-if="menu.recommended" class="text-daangn-500 text-[10px] border border-daangn-500 px-1 rounded font-bold">추천</span>
+                             <span v-if="menu.recommended" class="text-crema-espresso text-[10px] border border-crema-espresso px-1 rounded font-bold">추천</span>
                              <span class="text-gray-900 text-sm">{{ menu.itemName }}</span>
                         </div>
                         <span class="font-bold text-gray-900 text-sm">{{ menu.price.toLocaleString() }}원</span>
@@ -504,7 +504,7 @@ const filteredPhotos = computed(() => {
                         </div>
 
                         <textarea v-model="newReview.content" rows="2" placeholder="솔직한 후기를 남겨주세요." class="w-full bg-gray-50 rounded-lg p-2 text-sm border-none focus:ring-1 focus:ring-gray-300" required></textarea>
-                        <button type="submit" class="w-full bg-gray-100 text-gray-600 hover:bg-daangn-100 hover:text-daangn-600 font-bold py-2 rounded-lg transition text-sm">
+                        <button type="submit" class="w-full bg-gray-100 text-gray-600 hover:bg-crema-latte hover:text-crema-espresso font-bold py-2 rounded-lg transition text-sm">
                             등록하기
                         </button>
                     </form>
@@ -520,7 +520,7 @@ const filteredPhotos = computed(() => {
                      </button>
                  </div>
                  <div class="flex items-center gap-2">
-                     <button class="bg-daangn-500 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-daangn-600 transition shadow-lg shadow-daangn-200">
+                     <button class="bg-crema-espresso text-white font-bold px-6 py-2.5 rounded-lg hover:bg-crema-espresso transition shadow-lg shadow-crema-crema">
                          채팅하기
                      </button>
                  </div>
@@ -569,7 +569,7 @@ const filteredPhotos = computed(() => {
                          <input id="photo-upload-input" type="file" accept="image/*" @change="handlePhotoUploadFileChange" class="hidden" />
                     </div>
 
-                    <button @click="submitPhotoUpload" class="w-full bg-daangn-500 text-white font-bold py-3 rounded-xl disabled:bg-gray-300 disabled:cursor-not-allowed transition shadow-md shadow-daangn-200" :disabled="!photoUploadFile">
+                    <button @click="submitPhotoUpload" class="w-full bg-crema-espresso text-white font-bold py-3 rounded-xl disabled:bg-gray-300 disabled:cursor-not-allowed transition shadow-md shadow-crema-crema" :disabled="!photoUploadFile">
                         등록 완료
                     </button>
                     <button @click="showPhotoUploadModal = false" class="w-full text-gray-400 text-xs underline">취소</button>
@@ -586,7 +586,7 @@ const filteredPhotos = computed(() => {
                 <div class="flex flex-wrap gap-2 justify-center">
                     <button v-for="keyword in keywords" :key="keyword.id" 
                             @click="voteKeyword(keyword.id)"
-                            class="px-3 py-2 rounded-lg bg-gray-50 text-gray-700 text-sm font-medium hover:bg-daangn-50 hover:text-daangn-600 hover:border-daangn-200 border border-transparent transition">
+                            class="px-3 py-2 rounded-lg bg-gray-50 text-gray-700 text-sm font-medium hover:bg-crema-latte hover:text-crema-espresso hover:border-crema-crema border border-transparent transition">
                         #{{ keyword.name }}
                     </button>
                 </div>

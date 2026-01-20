@@ -25,17 +25,21 @@ import java.util.List;
 public class CrawlingController {
 
     private final CrawlerService naverBlogCrawler;
+    private final com.coffeematch.backend.service.impl.KakaoMapCrawler kakaoMapCrawler;
     private final CsvExportService csvExportService;
 
     @Autowired
     public CrawlingController(@Qualifier("naverBlogCrawler") CrawlerService naverBlogCrawler,
+            @Qualifier("kakaoMapCrawler") com.coffeematch.backend.service.impl.KakaoMapCrawler kakaoMapCrawler,
             CsvExportService csvExportService) {
         this.naverBlogCrawler = naverBlogCrawler;
+        this.kakaoMapCrawler = kakaoMapCrawler;
         this.csvExportService = csvExportService;
     }
 
     @GetMapping("/sample")
-    public ResponseEntity<Resource> generateSampleExcel(@RequestParam String keyword) {
+    public ResponseEntity<Resource> generateSampleExcel(@RequestParam String keyword,
+            @RequestParam(defaultValue = "5") int limit) {
         String errorPath = "/tmp/crawl_error.txt";
 
         try {
@@ -48,11 +52,12 @@ public class CrawlingController {
             }
 
             List<CrawlDataDto> allData = new ArrayList<>();
-            // allData.addAll(naverBlogCrawler.crawl(keyword, 5));
+            allData.addAll(naverBlogCrawler.crawl(keyword, limit));
 
             // Generate dummy data
-            allData.add(new CrawlDataDto("TEST", "Test Cafe", "Addr", "123", "5.0", "10", "9-6", "Url", "Title", "Img",
-                    "Content"));
+            // allData.add(new CrawlDataDto("TEST", "Test Cafe", "Addr", "123", "5.0", "10",
+            // "9-6", "Url", "Title", "Img",
+            // "Content"));
 
             // 3. Generate CSV
             String filePath = "/tmp/crawled_sample_" + System.currentTimeMillis() + ".csv";
@@ -77,6 +82,30 @@ public class CrawlingController {
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/kakao")
+    public ResponseEntity<Resource> crawlKakaoDetail(@RequestParam String keyword,
+            @RequestParam(defaultValue = "3") int limit) {
+
+        try {
+            List<com.coffeematch.backend.dto.CrawlerCafeDetailDto> details = kakaoMapCrawler.crawlDetail(keyword,
+                    limit);
+
+            String filePath = "/tmp/kakao_detail_" + System.currentTimeMillis() + ".csv";
+            File csvFile = csvExportService.createDetailCsv(details, filePath);
+
+            Resource resource = new FileSystemResource(csvFile);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvFile.getName())
+                    .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                    .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }

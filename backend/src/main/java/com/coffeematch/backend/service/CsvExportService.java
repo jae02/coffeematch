@@ -42,4 +42,41 @@ public class CsvExportService {
             return "";
         return "\"" + input.replace("\"", "\"\"").replace("\n", " ") + "\"";
     }
+
+    public File createDetailCsv(List<com.coffeematch.backend.dto.CrawlerCafeDetailDto> dataList, String fileName)
+            throws IOException {
+        File file = new File(fileName);
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+            // Header
+            writer.println("CafeName,Address,Category,BizHour,CafeURL,Reviewer,Rating,Date,Content,ReviewImageURL");
+
+            // Data
+            for (com.coffeematch.backend.dto.CrawlerCafeDetailDto cafe : dataList) {
+                if (cafe.getReviews() == null || cafe.getReviews().isEmpty()) {
+                    // Write cafe info even if no reviews
+                    writer.printf("%s,%s,%s,%s,%s,,,,,%n",
+                            escape(cafe.getName()),
+                            escape(cafe.getAddress()),
+                            escape(cafe.getCategory()),
+                            escape(cafe.getBusinessHours()),
+                            escape(cafe.getUrl()));
+                } else {
+                    for (com.coffeematch.backend.dto.ReviewDetailDto review : cafe.getReviews()) {
+                        writer.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                                escape(cafe.getName()),
+                                escape(cafe.getAddress()),
+                                escape(cafe.getCategory()),
+                                escape(cafe.getBusinessHours()),
+                                escape(cafe.getUrl()),
+                                escape(review.getNickname()),
+                                escape(review.getRating()),
+                                escape(review.getDate()),
+                                escape(review.getContent()),
+                                escape(review.getImageUrl()));
+                    }
+                }
+            }
+        }
+        return file;
+    }
 }

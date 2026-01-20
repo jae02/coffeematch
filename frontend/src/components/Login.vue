@@ -42,7 +42,7 @@ const handleLogin = async () => {
 
 <template>
     <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100 max-w-sm mx-auto mt-10">
-        <h2 class="text-2xl font-bold text-daangn-500 mb-6 text-center">로그인</h2>
+        <h2 class="text-2xl font-bold text-crema-espresso mb-6 text-center">로그인</h2>
         
         <form @submit.prevent="handleLogin" class="space-y-4">
             <div>
@@ -55,20 +55,20 @@ const handleLogin = async () => {
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">비밀번호</label>
                 <input v-model="password" type="password" required 
-                    class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-daangn-500 transition" 
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-crema-espresso transition" 
                     placeholder="비밀번호 입력" />
             </div>
 
             <div v-if="error" class="text-red-500 text-sm font-medium">{{ error }}</div>
 
-            <button type="submit" class="w-full bg-daangn-500 text-white font-bold py-3 rounded-lg hover:bg-daangn-600 transition shadow-md">
+            <button type="submit" class="w-full bg-crema-espresso text-white font-bold py-3 rounded-lg hover:bg-crema-espresso/90 transition shadow-md">
                 로그인하기
             </button>
         </form>
 
         <div class="mt-6 text-center">
             <p class="text-sm text-gray-500">아직 회원이 아니신가요?</p>
-            <button @click="$emit('go-signup')" class="text-daangn-500 font-bold text-sm hover:underline mt-1">
+            <button @click="$emit('go-signup')" class="text-crema-espresso font-bold text-sm hover:underline mt-1">
                 이메일로 회원가입
             </button>
         </div>
