@@ -55,6 +55,10 @@ class KakaoMapCrawler(BasePlatformCrawler):
                     name_elem = await item.query_selector('.head_item .tit_name')
                     name = await name_elem.inner_text() if name_elem else ""
                     
+                    # 이름 앞의 알파벳 접두사 제거 (예: "A 카페이름" -> "카페이름")
+                    import re
+                    name = re.sub(r'^[A-Z]\s+', '', name)
+                    
                     # 상세 페이지 링크에서 ID 추출
                     link_elem = await item.query_selector('.moreview')
                     detail_url = await link_elem.get_attribute('href') if link_elem else ""

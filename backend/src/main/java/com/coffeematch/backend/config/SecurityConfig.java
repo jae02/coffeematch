@@ -45,7 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/simplecrawl")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/cafes/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/admin/crawl/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/admin/cafes/crawl/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/admin/cafes/crawl")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),

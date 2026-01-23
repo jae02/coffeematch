@@ -4,6 +4,7 @@ import com.coffeematch.backend.dto.AdminStatsDto;
 import com.coffeematch.backend.dto.CafeDetailDto;
 import com.coffeematch.backend.dto.CafeDto;
 import com.coffeematch.backend.dto.CafeRequestDto;
+import com.coffeematch.backend.dto.CrawlCafeRequestDto;
 import com.coffeematch.backend.dto.MenuDto;
 import com.coffeematch.backend.dto.MenuRequestDto;
 import com.coffeematch.backend.dto.ReviewRequestDto;
@@ -12,6 +13,7 @@ import com.coffeematch.backend.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
@@ -226,6 +228,90 @@ public class CafeService {
     @Transactional
     public void deleteCafe(Long id) {
         cafeRepository.deleteById(id);
+    }
+
+    // Crawler-specific methods
+    @Transactional
+    public CafeDto createCafeFromCrawl(CrawlCafeRequestDto request) {
+        // 1. Check for duplicate by platformId + sourcePlatform
+        Platform platform = Platform.valueOf(request.getSourcePlatform());
+        Optional<Cafe> existingCafe = cafeRepository.findBySourcePlatformAndPlatformId(
+                platform,
+                request.getPlatformId());
+
+        Cafe cafe;
+        if (existingCafe.isPresent()) {
+            // Update existing cafe
+            cafe = existingCafe.get();
+            cafe.setName(request.getName());
+            cafe.setAddress(request.getAddress());
+            cafe.setPhone(request.getPhone());
+            cafe.setLatitude(request.getLatitude());
+            cafe.setLongitude(request.getLongitude());
+            cafe.setLastSyncedAt(LocalDateTime.now());
+
+            // Update description with category and business hours
+            String description = buildDescription(request.getCategory(), request.getBusinessHours());
+            cafe.setDescription(description);
+
+            // Update status if provided
+            if (request.getStatus() != null && !request.getStatus().isEmpty()) {
+                cafe.setStatus(CafeStatus.valueOf(request.getStatus()));
+            }
+        } else {
+            // Create new cafe
+            cafe = new Cafe();
+            cafe.setName(request.getName());
+            cafe.setAddress(request.getAddress());
+            cafe.setPhone(request.getPhone());
+            cafe.setLatitude(request.getLatitude());
+            cafe.setLongitude(request.getLongitude());
+            cafe.setSourcePlatform(platform);
+            cafe.setPlatformId(request.getPlatformId());
+            cafe.setLastSyncedAt(LocalDateTime.now());
+
+            // Set description
+            String description = buildDescription(request.getCategory(), request.getBusinessHours());
+            cafe.setDescription(description);
+
+            // Set status
+            if (request.getStatus() != null && !request.getStatus().isEmpty()) {
+                cafe.setStatus(CafeStatus.valueOf(request.getStatus()));
+            } else {
+                cafe.setStatus(CafeStatus.NEW);
+            }
+        }
+
+        Cafe savedCafe = cafeRepository.save(cafe);
+
+        // 2. Save or update PlatformData
+        if (request.getRawData() != null && !request.getRawData().isEmpty()) {
+            List<PlatformData> existingPlatformData = platformDataRepository.findByCafeId(savedCafe.getId());
+            PlatformData platformData = existingPlatformData.stream()
+                    .filter(pd -> pd.getPlatform() == platform)
+                    .findFirst()
+                    .orElse(new PlatformData(savedCafe, platform, request.getRawData()));
+
+            platformData.setRawData(request.getRawData());
+            platformData.setLastCheckedAt(LocalDateTime.now());
+            platformDataRepository.save(platformData);
+        }
+
+        return new CafeDto(savedCafe);
+    }
+
+    private String buildDescription(String category, String businessHours) {
+        StringBuilder desc = new StringBuilder();
+        if (category != null && !category.isEmpty()) {
+            desc.append("카테고리: ").append(category);
+        }
+        if (businessHours != null && !businessHours.isEmpty()) {
+            if (desc.length() > 0) {
+                desc.append("\n");
+            }
+            desc.append("영업시간: ").append(businessHours);
+        }
+        return desc.toString();
     }
 
     // Admin Stats
