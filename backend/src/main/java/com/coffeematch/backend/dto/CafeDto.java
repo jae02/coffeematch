@@ -15,6 +15,8 @@ public class CafeDto {
     private Integer reviewCount;
     private Integer bookmarkCount;
     private List<MenuDto> menus;
+    private Double latitude;
+    private Double longitude;
 
     public CafeDto(Cafe cafe) {
         this.id = cafe.getId();
@@ -26,6 +28,8 @@ public class CafeDto {
         this.internalRatingAvg = cafe.getInternalRatingAvg();
         this.reviewCount = cafe.getReviewCount();
         this.bookmarkCount = cafe.getBookmarkCount();
+        this.latitude = cafe.getLatitude();
+        this.longitude = cafe.getLongitude();
         if (cafe.getMenus() != null) {
             this.menus = cafe.getMenus().stream().map(MenuDto::new).collect(Collectors.toList());
         }
@@ -70,5 +74,13 @@ public class CafeDto {
 
     public List<MenuDto> getMenus() {
         return menus;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
     }
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import axios from 'axios';
 
 const props = defineProps({
@@ -39,6 +39,10 @@ const showPhotoUploadModal = ref(false);
 const photoUploadFile = ref(null);
 const photoUploadPreview = ref(null);
 const photoUploadCategory = ref('GENERAL');
+
+// Kakao Map
+const mapContainer = ref(null);
+const mapInstance = ref(null);
 
 const api = axios.create({
     baseURL: 'http://localhost:8080/api'
@@ -237,6 +241,62 @@ onMounted(() => {
     fetchKeywords();
 });
 
+// Initialize Kakao Map
+const initMap = () => {
+    if (!cafe.value || !mapContainer.value) return;
+    if (!window.kakao || !window.kakao.maps) {
+        console.error('Kakao Maps SDK not loaded');
+        return;
+    }
+
+    const lat = cafe.value.latitude;
+    const lng = cafe.value.longitude;
+
+    // If coordinates exist, use them directly
+    if (lat && lng) {
+        createMap(lat, lng);
+    } else if (cafe.value.address) {
+        // Use Geocoder to convert address to coordinates
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.addressSearch(cafe.value.address, (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+                createMap(result[0].y, result[0].x);
+            } else {
+                console.warn('Geocoding failed for address:', cafe.value.address);
+            }
+        });
+    }
+};
+
+const createMap = (lat, lng) => {
+    const options = {
+        center: new window.kakao.maps.LatLng(lat, lng),
+        level: 3
+    };
+    mapInstance.value = new window.kakao.maps.Map(mapContainer.value, options);
+
+    // Add marker
+    const marker = new window.kakao.maps.Marker({
+        position: new window.kakao.maps.LatLng(lat, lng),
+        map: mapInstance.value
+    });
+
+    // Add info window
+    const infoContent = `<div style="padding:8px 12px;font-size:13px;font-weight:bold;">${cafe.value.name}</div>`;
+    const infowindow = new window.kakao.maps.InfoWindow({
+        content: infoContent
+    });
+    infowindow.open(mapInstance.value, marker);
+};
+
+// Watch for cafe data and initialize map when available
+watch(() => cafe.value, async (newCafe) => {
+    if (newCafe) {
+        await nextTick();
+        initMap();
+    }
+});
+
 const sortedMenus = computed(() => {
     if (!cafe.value || !cafe.value.menus) return [];
     return [...cafe.value.menus].sort((a, b) => a.price - b.price);
@@ -372,6 +432,13 @@ const filteredPhotos = computed(() => {
                         <span class="font-bold text-gray-900 text-sm">{{ menu.price.toLocaleString() }}원</span>
                     </div>
                 </div>
+            </div>
+
+            <!-- Map Section (Home Tab) -->
+            <div v-show="activeTab === 'home'" class="p-4 border-b border-gray-100">
+                <h3 class="font-bold text-gray-900 mb-4">📍 위치</h3>
+                <div ref="mapContainer" class="w-full h-48 rounded-xl bg-gray-100 overflow-hidden"></div>
+                <p class="text-xs text-gray-400 mt-2">{{ cafe?.address }}</p>
             </div>
 
             <!-- Photos Section (Photos Tab) -->
