@@ -72,12 +72,61 @@ class KakaoMapCrawler(BasePlatformCrawler):
                     category_elem = await item.query_selector('.subcategory')
                     category = await category_elem.inner_text() if category_elem else ""
                     
+                    # 좌표 추출 (상세 페이지 방문)
+                    latitude = None
+                    longitude = None
+                    
+                    if platform_id and platform_id != f"kakao_{idx}":
+                        try:
+                            detail_page = await self.context.new_page()
+                            await detail_page.goto(f"https://place.map.kakao.com/{platform_id}", wait_until='domcontentloaded', timeout=10000)
+                            await asyncio.sleep(2)
+                            
+                            # URL에서 좌표 추출 시도 (지도 이동 시 URL에 좌표가 포함됨)
+                            # 또는 페이지 내 스크립트에서 좌표 추출
+                            coord_script = await detail_page.evaluate('''() => {
+                                // og:image 메타 태그에서 좌표 추출 (가장 신뢰성 높음)
+                                const ogImage = document.querySelector('meta[property="og:image"]');
+                                if (ogImage) {
+                                    const content = ogImage.getAttribute('content');
+                                    // URL 형식: ...&m=127.04663583870042,37.54715896195635
+                                    const mMatch = content.match(/[&?]m=([0-9.]+),([0-9.]+)/);
+                                    if (mMatch) {
+                                        return { lat: parseFloat(mMatch[2]), lng: parseFloat(mMatch[1]) };
+                                    }
+                                }
+                                
+                                // 페이지 소스에서 좌표 패턴 찾기 (백업)
+                                const scripts = document.querySelectorAll('script');
+                                for (let s of scripts) {
+                                    const text = s.textContent || '';
+                                    const match = text.match(/"y":"([0-9.]+)","x":"([0-9.]+)"/);
+                                    if (match) {
+                                        return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+                                    }
+                                }
+                                return null;
+                            }''')
+                            
+                            if coord_script:
+                                latitude = coord_script.get('lat')
+                                longitude = coord_script.get('lng')
+                                print(f"    📍 좌표 추출 성공: {latitude}, {longitude}")
+                            else:
+                                print(f"    ⚠️ 좌표 추출 실패 (페이지 구조 변경됨)")
+                            
+                            await detail_page.close()
+                        except Exception as coord_err:
+                            print(f"    ⚠️ 상세페이지 좌표 추출 오류: {coord_err}")
+                    
                     cafe = CafeData(
                         name=name,
                         address=address,
                         category=category,
                         source_platform="KAKAO_MAP",
                         platform_id=platform_id,
+                        latitude=latitude,
+                        longitude=longitude,
                         status="NEW",
                         raw_data={"detail_url": detail_url}
                     )
