@@ -7,9 +7,9 @@ export default {
     theme: {
         extend: {
             colors: {
-                crema: {
-                    espresso: '#3C2A21', // Primary: Deep Espresso (Logo, Keys, Text)
-                    crema: '#D4A373',    // Secondary: Golden Crema (Icons, Ratings)
+                creama: {
+                    espresso: '#3E2723',  // Primary: Deep Espresso (Text, Headers)
+                    creama: '#D4A373',    // Secondary: Golden Creama (Icons, Ratings)
                     latte: '#F5EBE0',    // Background: Soft Latte (Backgrounds)
                 },
                 gray: {

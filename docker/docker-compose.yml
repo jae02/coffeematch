@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:8.0
-    container_name: crema-db
+    container_name: creama-db
     environment:
       MYSQL_ROOT_PASSWORD: '1234'
       MYSQL_DATABASE: 'coffeematch'
@@ -15,7 +15,7 @@ services:
 
   backend:
     build: ../backend
-    container_name: crema-backend
+    container_name: creama-backend
     ports:
       - "8080:8080"
     environment:
@@ -28,7 +28,7 @@ services:
 
   frontend:
     build: ../frontend
-    container_name: crema-frontend
+    container_name: creama-frontend
     ports:
       - "5173:80"
     volumes:

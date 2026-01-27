@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, onMounted } from 'vue';
 import Login from './Login.vue';
 import Signup from './Signup.vue';
@@ -40,7 +40,7 @@ const handleLogout = () => {
 <template>
     <div class="pb-20 bg-gray-50 min-h-screen">
         <header class="bg-white p-4 sticky top-0 z-10 flex justify-between items-center border-b border-gray-100">
-             <h1 class="text-xl font-bold text-crema-espresso">마이페이지</h1>
+             <h1 class="text-xl font-bold text-creama-espresso">마이페이지</h1>
              <div v-if="isLoggedIn" class="flex gap-4">
                  <button class="text-gray-500 font-bold text-sm">설정</button>
                  <button @click="handleLogout" class="text-red-500 font-bold text-sm">로그아웃</button>
@@ -94,10 +94,10 @@ const handleLogout = () => {
                 </div>
 
                 <!-- Banner -->
-                <div class="bg-crema-latte p-4 rounded-xl flex items-center justify-between border border-crema-latte">
+                <div class="bg-creama-latte p-4 rounded-xl flex items-center justify-between border border-creama-latte">
                     <div>
-                        <h3 class="font-bold text-crema-espresso">Crema VIP 되기</h3>
-                        <p class="text-xs text-crema-espresso opacity-80">더 많은 혜택을 누려보세요!</p>
+                        <h3 class="font-bold text-creama-espresso">Creama VIP 되기</h3>
+                        <p class="text-xs text-creama-espresso opacity-80">더 많은 혜택을 누려보세요!</p>
                     </div>
                     <span class="text-2xl">☕</span>
                 </div>

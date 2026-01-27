@@ -1,7 +1,7 @@
-<template>
+﻿<template>
     <div class="pb-20 bg-gray-50 min-h-screen">
         <header class="bg-white p-4 sticky top-0 z-10 border-b border-gray-100 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-crema-espresso">예약/웨이팅</h1>
+            <h1 class="text-xl font-bold text-creama-espresso">예약/웨이팅</h1>
             <span class="text-gray-400">📅</span>
         </header>
 
@@ -11,7 +11,7 @@
                  <div class="text-4xl mb-2">🍽️</div>
                  <h3 class="text-lg font-bold text-gray-800 mb-1">예정된 일정이 없어요</h3>
                  <p class="text-gray-500 text-sm mb-4">맛있는 커피 한 잔 예약해보시는 건 어때요?</p>
-                 <button class="bg-crema-espresso text-white w-full py-3 rounded-lg font-bold hover:bg-crema-espresso/90 transition">
+                 <button class="bg-creama-espresso text-white w-full py-3 rounded-lg font-bold hover:bg-creama-espresso/90 transition">
                      맛집 찾아보기
                  </button>
              </div>

@@ -1,7 +1,7 @@
-<template>
+﻿<template>
     <div class="pb-20 bg-gray-50 min-h-screen">
         <header class="bg-white p-4 sticky top-0 z-10 border-b border-gray-100">
-            <h1 class="text-xl font-bold text-crema-espresso">저장</h1>
+            <h1 class="text-xl font-bold text-creama-espresso">저장</h1>
         </header>
 
         <div class="p-4">
