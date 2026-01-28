@@ -1,0 +1,43 @@
+# VPS 프로덕션 배포용 Docker Compose
+# 서버: 175.126.73.154
+# 포트: Frontend(80), Backend(8080), DB(3306)
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: creama-db
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-1234}'
+      MYSQL_DATABASE: 'coffeematch'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+
+  backend:
+    image: ${DOCKER_USERNAME:-yourusername}/coffeematch-backend:latest
+    container_name: creama-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/coffeematch?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: '${DB_PASSWORD:-1234}'
+    depends_on:
+      - db
+    restart: always
+
+  frontend:
+    image: ${DOCKER_USERNAME:-yourusername}/coffeematch-frontend:latest
+    container_name: creama-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mysql_data:
