@@ -44,8 +44,11 @@ const photoUploadCategory = ref('GENERAL');
 const mapContainer = ref(null);
 const mapInstance = ref(null);
 
+// API Base URL (for templates and axios)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const api = axios.create({
-    baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api`
+    baseURL: `${API_BASE_URL}/api`
 });
 
 // Helper to get headers
@@ -344,7 +347,7 @@ const filteredPhotos = computed(() => {
         <div v-else-if="cafe" class="animate-fade-in">
             <!-- Hero Image -->
             <div class="w-full aspect-square md:aspect-video bg-gray-200 relative group">
-                <img :src="cafe.imageUrl?.startsWith('/') ? (import.meta.env.VITE_API_URL || 'http://localhost:8080') + cafe.imageUrl : (cafe.imageUrl || 'https://placehold.co/800x600/e0cec7/5d4037?text=Cafe')" class="w-full h-full object-cover" />
+                <img :src="cafe.imageUrl?.startsWith('/') ? API_BASE_URL + cafe.imageUrl : (cafe.imageUrl || 'https://placehold.co/800x600/e0cec7/5d4037?text=Cafe')" class="w-full h-full object-cover" />
                 <div class="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-xs backdrop-blur-sm z-10">
                     ⭐ {{ (cafe.internalRatingAvg || 0).toFixed(1) }} ({{ cafe.reviewCount }}명)
                 </div>
@@ -481,7 +484,7 @@ const filteredPhotos = computed(() => {
 
                     <template v-if="filteredPhotos.length > 0">
                         <div v-for="photo in filteredPhotos" :key="photo.id" class="aspect-square bg-gray-100 relative group cursor-pointer">
-                            <img :src="photo.imageUrl.startsWith('/') ? (import.meta.env.VITE_API_URL || 'http://localhost:8080') + photo.imageUrl : photo.imageUrl" class="w-full h-full object-cover" />
+                            <img :src="photo.imageUrl.startsWith('/') ? API_BASE_URL + photo.imageUrl : photo.imageUrl" class="w-full h-full object-cover" />
                         </div>
                     </template>
                     <!-- Empty State Placeholders (Reduced count since we have upload tile) -->
@@ -519,7 +522,7 @@ const filteredPhotos = computed(() => {
                         
                         <!-- Review Image -->
                         <div v-if="review.imageUrl" class="pl-8 mb-2 relative inline-block">
-                             <img :src="review.imageUrl.startsWith('/') ? (import.meta.env.VITE_API_URL || 'http://localhost:8080') + review.imageUrl : review.imageUrl" class="rounded-lg max-h-40 object-cover border border-gray-100" />
+                             <img :src="review.imageUrl.startsWith('/') ? API_BASE_URL + review.imageUrl : review.imageUrl" class="rounded-lg max-h-40 object-cover border border-gray-100" />
                              <span v-if="review.imageCategory" class="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded backdrop-blur-sm">
                                 {{ review.imageCategory }}
                              </span>
