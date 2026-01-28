@@ -13,6 +13,7 @@ public class CrawlCafeRequestDto {
     private Double latitude;
     private Double longitude;
     private String status; // NEW, ACTIVE, CLOSED_SUSPECTED, CLOSED_CONFIRMED
+    private String businessType; // 카페, 베이커리, 제과점 등
     private Map<String, Object> rawData;
 
     public CrawlCafeRequestDto() {
@@ -122,5 +123,13 @@ public class CrawlCafeRequestDto {
 
     public void setRawData(Map<String, Object> rawData) {
         this.rawData = rawData;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
     }
 }

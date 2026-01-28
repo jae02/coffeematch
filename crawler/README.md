@@ -1,28 +1,39 @@
-# Multi-Platform Cafe Crawler
+# CoffeeMatch Crawler
 
-Python 기반 Playwright 크롤러 프로토타입
+서울시 공공데이터에서 카페/베이커리 정보를 수집하는 도구입니다.
 
 ## 설치
 
 ```bash
-cd crawler
-pip3 install -r requirements.txt
-playwright install chromium
+pip install -r requirements.txt
 ```
 
-## 실행
+## 사용법
+
+### API 키 발급
+
+1. [서울시 열린데이터광장](https://data.seoul.go.kr) 회원가입
+2. API 인증키 발급 받기
+
+### 실행
 
 ```bash
-python3 playwright_crawler_prototype.py
+# 테스트 실행 (100개 데이터만 조회, DB 저장 안함)
+python public_data_collector.py --api-key YOUR_API_KEY --test
+
+# 드라이런 (전체 조회, DB 저장 안하고 미리보기만)
+python public_data_collector.py --api-key YOUR_API_KEY --dry-run
+
+# 전체 실행 (수집 + DB 저장)
+python public_data_collector.py --api-key YOUR_API_KEY
+
+# 결과를 JSON 파일로도 저장
+python public_data_collector.py --api-key YOUR_API_KEY --output cafes.json
 ```
 
-## 기능
+## 수집 대상
 
-1. **신규 카페 탐색**: 지역별 키워드 검색으로 새로운 카페 발견
-2. **증분 리뷰 수집**: 최신 리뷰 날짜 기준으로 새 리뷰만 수집
-3. **Anti-Bot 우회**: Stealth 모드, 랜덤 User-Agent, 자연스러운 마우스/타이핑
-4. **다중 플랫폼**: 카카오맵, 네이버맵, 네이버 블로그 지원
-
-## 출력
-
-크롤링 결과는 `sample_crawl_result.json`에 저장됩니다.
+- 커피숍 / 카페 / 커피전문점
+- 베이커리 / 제과점
+- 영업중인 업소만 필터링
+- 서울시 주소만 필터링

@@ -258,6 +258,10 @@ public class CafeService {
             if (request.getStatus() != null && !request.getStatus().isEmpty()) {
                 cafe.setStatus(CafeStatus.valueOf(request.getStatus()));
             }
+            // Update businessType if provided
+            if (request.getBusinessType() != null && !request.getBusinessType().isEmpty()) {
+                cafe.setBusinessType(request.getBusinessType());
+            }
         } else {
             // Create new cafe
             cafe = new Cafe();
@@ -279,6 +283,10 @@ public class CafeService {
                 cafe.setStatus(CafeStatus.valueOf(request.getStatus()));
             } else {
                 cafe.setStatus(CafeStatus.NEW);
+            }
+            // Set businessType if provided
+            if (request.getBusinessType() != null && !request.getBusinessType().isEmpty()) {
+                cafe.setBusinessType(request.getBusinessType());
             }
         }
 

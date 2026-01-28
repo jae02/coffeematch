@@ -26,6 +26,9 @@ public class Cafe {
 
     private String imageUrl;
 
+    @Column(length = 50)
+    private String businessType; // 카페, 베이커리, 제과점 등
+
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Menu> menus = new ArrayList<>();
 
@@ -39,7 +42,7 @@ public class Cafe {
 
     // Platform tracking columns
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(length = 50)
     private Platform sourcePlatform;
 
     @Column(length = 100)
@@ -189,5 +192,13 @@ public class Cafe {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
     }
 }
