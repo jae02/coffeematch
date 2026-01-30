@@ -371,26 +371,15 @@ const filteredPhotos = computed(() => {
                     </div>
                 </div>
 
-                <!-- Platform Comparison Card -->
+                <!-- Rating Card -->
                 <div class="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-100">
-                    <h3 class="text-sm font-bold text-gray-700 mb-3">🔥 플랫폼 별점 비교</h3>
-                    <div class="flex gap-2 overflow-x-auto pb-1">
-                        <!-- Internal -->
-                        <div class="flex-1 min-w-[100px] bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center">
-                            <div class="text-[10px] text-gray-400 font-bold mb-1">COFFEEMATCH</div>
-                            <div class="text-xl font-bold text-creama-espresso">{{ (cafe.internalRatingAvg || 0).toFixed(1) }}</div>
-                            <div class="text-[10px] text-gray-400">리뷰 {{ cafe.reviewCount }}</div>
-                        </div>
-                        <!-- External Platforms -->
-                        <div v-for="platform in platformData" :key="platform.id" 
-                             class="flex-1 min-w-[100px] bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center relative group cursor-pointer"
-                             @click="platform.link && window.open(platform.link, '_blank')">
-                            <div class="text-[10px] font-bold mb-1" :class="platform.platformType === 'NAVER' ? 'text-green-500' : 'text-yellow-500'">
-                                {{ platform.platformType }}
+                    <div class="flex items-center gap-3">
+                        <div class="text-3xl font-bold text-creama-espresso">{{ (cafe.internalRatingAvg || 0).toFixed(1) }}</div>
+                        <div>
+                            <div class="flex gap-0.5 text-lg">
+                                <span v-for="i in 5" :key="i" :class="i <= Math.round(cafe.internalRatingAvg || 0) ? 'opacity-100' : 'opacity-30 grayscale'">☕</span>
                             </div>
-                            <div class="text-xl font-bold text-gray-800">{{ platform.rating }}</div>
-                            <div class="text-[10px] text-gray-400">리뷰 {{ platform.reviewCount }}</div>
-                            <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition rounded-lg"></div>
+                            <div class="text-xs text-gray-400">리뷰 {{ cafe.reviewCount }}개</div>
                         </div>
                     </div>
                 </div>
@@ -414,17 +403,8 @@ const filteredPhotos = computed(() => {
                 </div>
             </div>
 
-            <!-- Tab Navigation -->
-            <div class="sticky top-[48px] md:top-0 z-40 bg-white border-b border-gray-200">
-                <div class="flex">
-                    <button @click="activeTab = 'home'" class="flex-1 py-3 text-sm font-bold transition border-b-2" :class="activeTab === 'home' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400'">홈</button>
-                    <button @click="activeTab = 'photos'" class="flex-1 py-3 text-sm font-bold transition border-b-2" :class="activeTab === 'photos' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400'">사진</button>
-                    <button @click="activeTab = 'reviews'" class="flex-1 py-3 text-sm font-bold transition border-b-2" :class="activeTab === 'reviews' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400'">리뷰</button>
-                </div>
-            </div>
-
-            <!-- Menu Section (Home Tab) -->
-            <div v-show="activeTab === 'home'" class="p-4 border-b border-gray-100">
+            <!-- Menu Section -->
+            <div class="p-4 border-b border-gray-100">
                 <h3 class="font-bold text-gray-900 mb-4">메뉴</h3>
                 <div class="space-y-3">
                     <div v-for="menu in sortedMenus" :key="menu.id" class="flex justify-between items-center">
@@ -437,148 +417,174 @@ const filteredPhotos = computed(() => {
                 </div>
             </div>
 
-            <!-- Map Section (Home Tab) -->
-            <div v-show="activeTab === 'home'" class="p-4 border-b border-gray-100">
+            <!-- Map Section -->
+            <div class="p-4 border-b border-gray-100">
                 <h3 class="font-bold text-gray-900 mb-4">📍 위치</h3>
                 <div ref="mapContainer" class="w-full h-48 rounded-xl bg-gray-100 overflow-hidden"></div>
                 <p class="text-xs text-gray-400 mt-2">{{ cafe?.address }}</p>
             </div>
 
-            <!-- Photos Section (Photos Tab) -->
-            <div v-show="activeTab === 'photos'" class="bg-white min-h-[300px]">
-                <!-- Photo Filter -->
-                <div class="flex gap-2 p-4 overflow-x-auto no-scrollbar">
-                    <button @click="activePhotoFilter = 'ALL'" 
-                            class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border transition"
-                            :class="activePhotoFilter === 'ALL' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200'">
-                        전체
-                    </button>
-                    <button @click="activePhotoFilter = 'GENERAL'" 
-                            class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border transition"
-                            :class="activePhotoFilter === 'GENERAL' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200'">
-                        일반
-                    </button>
-                    <button @click="activePhotoFilter = 'STORE'" 
-                            class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border transition"
-                            :class="activePhotoFilter === 'STORE' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200'">
-                        매장
-                    </button>
-                    <button @click="activePhotoFilter = 'MENU'" 
-                            class="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap border transition"
-                            :class="activePhotoFilter === 'MENU' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200'">
-                        메뉴
-                    </button>
+            <!-- Photos Section (Musinsa Style) -->
+            <div class="bg-white border-b border-gray-100 py-4">
+                <div class="flex items-center justify-between px-4 mb-3">
+                    <h3 class="font-bold text-gray-900">스타일 포토 <span class="text-gray-400 font-normal">{{ filteredPhotos.length }}</span></h3>
+                    <button @click="showPhotoUploadModal = true" class="text-xs text-gray-500 hover:text-gray-900 transition">+ 사진 등록</button>
                 </div>
-
-                <!-- Photo Grid -->
-                <div class="grid grid-cols-3 gap-0.5 relative min-h-[300px]">
-                    <!-- Upload Tile (Always First) -->
-                    <div @click="showPhotoUploadModal = true" class="aspect-square bg-gray-50 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition group border border-dashed border-gray-300">
-                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mb-1 group-hover:bg-gray-300 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                        </div>
-                        <span class="text-[10px] text-gray-500 font-medium">사진 추가</span>
-                    </div>
-
+                
+                <!-- Horizontal Scroll Photo Grid -->
+                <div class="flex gap-2 px-4 overflow-x-auto no-scrollbar pb-2">
                     <template v-if="filteredPhotos.length > 0">
-                        <div v-for="photo in filteredPhotos" :key="photo.id" class="aspect-square bg-gray-100 relative group cursor-pointer">
-                            <img :src="photo.imageUrl.startsWith('/') ? API_BASE_URL + photo.imageUrl : photo.imageUrl" class="w-full h-full object-cover" />
+                        <div v-for="photo in filteredPhotos.slice(0, 8)" :key="photo.id" 
+                             class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-80 transition">
+                            <img :src="photo.imageUrl.startsWith('/') ? API_BASE_URL + photo.imageUrl : photo.imageUrl" 
+                                 class="w-full h-full object-cover" />
+                        </div>
+                        <div v-if="filteredPhotos.length > 8" 
+                             class="flex-shrink-0 w-20 h-20 rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition">
+                            <span class="text-xs text-gray-500 font-bold">+{{ filteredPhotos.length - 8 }}</span>
                         </div>
                     </template>
-                    <!-- Empty State Placeholders (Reduced count since we have upload tile) -->
                     <template v-else>
-                        <div v-for="i in 8" :key="i" class="aspect-square bg-gray-50 border border-gray-100 flex items-center justify-center">
-                             <svg v-if="i === 4" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <div @click="showPhotoUploadModal = true" 
+                             class="flex-shrink-0 w-20 h-20 rounded-lg bg-gray-50 border border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
+                            <span class="text-[10px] text-gray-400">첫 사진</span>
                         </div>
                     </template>
                 </div>
             </div>
 
-            <!-- Reviews Section (Reviews Tab) -->
-            <div v-show="activeTab === 'reviews'" class="p-4 bg-gray-50 pb-20">
-                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-gray-900">리뷰 {{ reviews.length }}</h3>
-                 </div>
-                 
-                 <!-- Review List -->
-                 <div class="space-y-3 mb-6">
-                    <div v-for="review in reviews" :key="review.id" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded-full bg-gray-200 overflow-hidden">
-                                     <img :src="`https://ui-avatars.com/api/?name=${review.author}&background=random`" alt="User" />
-                                </div>
-                                <span class="font-bold text-sm text-gray-900">{{ review.author }}</span>
+            <!-- Reviews Section (Musinsa Style) -->
+            <div class="bg-white pb-24">
+                <!-- Review Summary Header -->
+                <div class="p-4 border-b border-gray-100">
+                    <div class="flex items-start gap-6">
+                        <!-- Average Rating -->
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-gray-900">{{ (cafe.internalRatingAvg || 0).toFixed(1) }}</div>
+                            <div class="flex justify-center gap-0.5 mt-1 text-sm">
+                                <span v-for="i in 5" :key="i" :class="i <= Math.round(cafe.internalRatingAvg || 0) ? 'opacity-100' : 'opacity-30 grayscale'">☕</span>
                             </div>
-                            <div class="flex text-yellow-400 text-xs">
-                                {{ '★'.repeat(review.rating) }}<span class="text-gray-300">{{ '★'.repeat(5 - review.rating) }}</span>
-                            </div>
+                            <div class="text-xs text-gray-400 mt-1">{{ reviews.length }}개 리뷰</div>
                         </div>
-                        <p class="text-gray-600 text-sm pl-8 mb-2">{{ review.content }}</p>
                         
-                        <!-- Review Image -->
-                        <div v-if="review.imageUrl" class="pl-8 mb-2 relative inline-block">
-                             <img :src="review.imageUrl.startsWith('/') ? API_BASE_URL + review.imageUrl : review.imageUrl" class="rounded-lg max-h-40 object-cover border border-gray-100" />
-                             <span v-if="review.imageCategory" class="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded backdrop-blur-sm">
-                                {{ review.imageCategory }}
-                             </span>
-                        </div>
-
-                        <span class="text-xs text-gray-400 pl-8 mt-1 block">{{ review.createdAt ? new Date(review.createdAt).toLocaleDateString() : '방금 전' }}</span>
-                    </div>
-                 </div>
-
-                 <!-- Review Form -->
-                 <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                    <h4 class="text-sm font-bold mb-3 text-gray-700">리뷰 남기기</h4>
-                    <form @submit.prevent="submitReview" class="space-y-3">
-                        <div class="flex gap-2">
-                             <input v-model="newReview.author" placeholder="닉네임" class="w-1/3 bg-gray-50 rounded-lg p-2 text-sm border-none focus:ring-1 focus:ring-gray-300" required />
-                             <select v-model="newReview.rating" class="w-2/3 bg-gray-50 rounded-lg p-2 text-sm border-none focus:ring-1 focus:ring-gray-300">
-                                <option :value="5">⭐⭐⭐⭐⭐ 최고예요</option>
-                                <option :value="4">⭐⭐⭐⭐ 좋아요</option>
-                                <option :value="3">⭐⭐⭐ 보통이에요</option>
-                            </select>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <select v-model="reviewCategory" class="w-1/3 bg-gray-50 rounded-lg p-2 text-sm border-none focus:ring-1 focus:ring-gray-300">
-                                <option value="GENERAL">일반</option>
-                                <option value="STORE">매장</option>
-                                <option value="MENU">메뉴</option>
-                            </select>
-                            
-                            <!-- Custom File Input with Preview Trigger -->
-                            <div class="flex-1">
-                                <label for="review-file-input" class="flex items-center gap-2 cursor-pointer bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span class="text-xs text-gray-500">{{ reviewImage ? '사진 변경' : '사진 추가' }}</span>
-                                </label>
-                                <input id="review-file-input" type="file" accept="image/*" @change="handleFileChange" class="hidden" />
+                        <!-- Rating Distribution Bars -->
+                        <div class="flex-1 space-y-1">
+                            <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="flex items-center gap-2">
+                                <span class="text-xs text-gray-400 w-6">{{ star }}점</span>
+                                <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gray-900 rounded-full transition-all" 
+                                         :style="{ width: reviews.length ? ((reviews.filter(r => r.rating === star).length / reviews.length) * 100) + '%' : '0%' }"></div>
+                                </div>
+                                <span class="text-xs text-gray-400 w-6 text-right">{{ reviews.filter(r => r.rating === star).length }}</span>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Image Preview in Review Form -->
-                        <div v-if="reviewImagePreview" class="relative inline-block mt-2">
-                            <img :src="reviewImagePreview" class="h-24 w-auto rounded-lg border border-gray-200 object-cover" />
-                            <button type="button" @click="removeReviewImage" class="absolute -top-2 -right-2 bg-gray-600 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md hover:bg-gray-800 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <!-- Review Filters -->
+                <div class="flex gap-2 px-4 py-3 border-b border-gray-100 overflow-x-auto no-scrollbar">
+                    <button class="px-3 py-1.5 text-xs font-bold rounded border border-gray-900 bg-gray-900 text-white">전체</button>
+                    <button class="px-3 py-1.5 text-xs font-medium rounded border border-gray-200 text-gray-500 hover:border-gray-400 transition">포토 리뷰</button>
+                    <button class="px-3 py-1.5 text-xs font-medium rounded border border-gray-200 text-gray-500 hover:border-gray-400 transition">최신순</button>
+                </div>
+
+                <!-- Review List -->
+                <div class="divide-y divide-gray-100">
+                    <div v-for="review in reviews" :key="review.id" class="p-4">
+                        <div class="flex gap-4">
+                            <!-- Left: User Info -->
+                            <div class="flex-shrink-0 w-20">
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <div class="w-5 h-5 rounded-full bg-gray-100 overflow-hidden">
+                                        <img :src="`https://ui-avatars.com/api/?name=${review.author}&background=e5e5e5&color=666&size=20`" alt="" />
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-700 truncate">{{ review.author }}</span>
+                                </div>
+                                <div class="text-[10px] text-gray-400 leading-tight">
+                                    {{ review.createdAt ? new Date(review.createdAt).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }) : '오늘' }}
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Review Content -->
+                            <div class="flex-1 min-w-0">
+                                <!-- Crema Rating -->
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="flex gap-0.5 text-xs">
+                                        <span v-for="i in 5" :key="i" :class="i <= review.rating ? 'opacity-100' : 'opacity-30 grayscale'">☕</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Content -->
+                                <p class="text-sm text-gray-700 leading-relaxed mb-3">{{ review.content }}</p>
+                                
+                                <!-- Review Image -->
+                                <div v-if="review.imageUrl" class="mb-2">
+                                    <img :src="review.imageUrl.startsWith('/') ? API_BASE_URL + review.imageUrl : review.imageUrl" 
+                                         class="w-24 h-24 rounded-lg object-cover" />
+                                </div>
+                                
+                                <!-- Helpful Button -->
+                                <button class="text-xs text-gray-400 hover:text-gray-700 transition flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                    </svg>
+                                    도움이 돼요
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div v-if="reviews.length === 0" class="py-12 text-center">
+                        <div class="text-gray-300 text-4xl mb-2">📝</div>
+                        <p class="text-gray-400 text-sm">아직 리뷰가 없어요</p>
+                        <p class="text-gray-400 text-xs">첫 번째 리뷰를 남겨주세요!</p>
+                    </div>
+                </div>
+
+                <!-- Review Form -->
+                <div class="p-4 border-t border-gray-100 bg-gray-50">
+                    <form @submit.prevent="submitReview" class="space-y-3">
+                        <div class="flex gap-2 items-center">
+                            <input v-model="newReview.author" placeholder="닉네임" 
+                                   class="flex-1 bg-white rounded-lg px-3 py-2.5 text-sm border border-gray-200 focus:border-gray-400 focus:outline-none" required />
+                            <div class="flex gap-1 items-center text-xl">
+                                <span v-for="i in 5" :key="i" 
+                                     @click="newReview.rating = i" 
+                                     class="cursor-pointer transition-transform hover:scale-125" 
+                                     :class="[i <= newReview.rating ? 'opacity-100 animate-wiggle' : 'opacity-30 grayscale']"
+                                     :style="{ animationDelay: (i - 1) * 0.1 + 's' }">☕</span>
+                            </div>
+                        </div>
+                        
+                        <textarea v-model="newReview.content" rows="3" placeholder="이 카페에 대한 솔직한 후기를 남겨주세요." 
+                                  class="w-full bg-white rounded-lg px-3 py-2.5 text-sm border border-gray-200 focus:border-gray-400 focus:outline-none resize-none" required></textarea>
+                        
+                        <div class="flex items-center justify-between">
+                            <label for="review-file-input" class="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer hover:text-gray-700 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
+                                {{ reviewImage ? '사진 변경' : '사진 첨부' }}
+                            </label>
+                            <input id="review-file-input" type="file" accept="image/*" @change="handleFileChange" class="hidden" />
+                            
+                            <button type="submit" class="bg-gray-900 text-white text-sm font-bold px-6 py-2 rounded-lg hover:bg-gray-800 transition">
+                                등록
                             </button>
                         </div>
-
-                        <textarea v-model="newReview.content" rows="2" placeholder="솔직한 후기를 남겨주세요." class="w-full bg-gray-50 rounded-lg p-2 text-sm border-none focus:ring-1 focus:ring-gray-300" required></textarea>
-                        <button type="submit" class="w-full bg-gray-100 text-gray-600 hover:bg-creama-latte hover:text-creama-espresso font-bold py-2 rounded-lg transition text-sm">
-                            등록하기
-                        </button>
+                        
+                        <!-- Image Preview -->
+                        <div v-if="reviewImagePreview" class="relative inline-block">
+                            <img :src="reviewImagePreview" class="h-16 rounded-lg object-cover" />
+                            <button type="button" @click="removeReviewImage" 
+                                    class="absolute -top-1.5 -right-1.5 bg-gray-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs hover:bg-gray-800">×</button>
+                        </div>
                     </form>
-                 </div>
+                </div>
             </div>
 
             <!-- Bottom Action Bar (Mobile) -->
@@ -678,6 +684,22 @@ const filteredPhotos = computed(() => {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+.animate-wiggle {
+    animation: wiggle 0.6s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
     }
 }
 </style>
