@@ -17,7 +17,7 @@ from config import (
     DB_CONFIG, COORDINATE_MATCH_RADIUS, NAME_SIMILARITY_THRESHOLD
 )
 
-from phase1_master_data.public_api_client import PublicAPIClient
+from phase1_master_data.seoul_api_client import SeoulOpenAPIClient
 from phase1_master_data.master_importer import MasterImporter
 from phase2_enrichment.coordinate_matcher import CoordinateMatcher
 from phase2_enrichment.kakao_enricher import KakaoEnricher
@@ -25,6 +25,7 @@ from phase3_scoring.crema_calculator import CremaCalculator
 
 import mysql.connector
 import argparse
+from typing import Dict
 
 
 class HybridPipeline:
@@ -34,7 +35,7 @@ class HybridPipeline:
     
     def __init__(self):
         self.db_config = DB_CONFIG
-        self.public_client = PublicAPIClient(PUBLIC_API_KEY, PUBLIC_API_URL)
+        self.public_client = SeoulOpenAPIClient(PUBLIC_API_KEY)
         self.master_importer = MasterImporter(self.db_config)
         self.matcher = CoordinateMatcher()
         self.kakao_enricher = KakaoEnricher(KAKAO_REST_API_KEY)
@@ -45,11 +46,12 @@ class HybridPipeline:
         Phase 1: 공공 API 데이터 수집 및 cafe_master 저장
         """
         print("=" * 60)
-        print("Phase 1: 공공 데이터 수집")
+        print("Phase 1: 공공 데이터 수집 (서울열린데이터광장)")
         print("=" * 60)
         
-        # 공공 API에서 데이터 수집
-        df = self.public_client.fetch_all_coffee_shops(max_pages=max_pages)
+        # 데이터 수집 (max_count = max_pages * 1000)
+        max_limit = max_pages * 1000
+        df = self.public_client.fetch_all(max_count=max_limit)
         
         if df.empty:
             print("❌ 수집된 데이터가 없습니다")

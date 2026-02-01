@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS cafe_master (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     
     -- 공공데이터 원본
-    business_number VARCHAR(20) UNIQUE NOT NULL COMMENT '인허가번호 (고유키)',
+    business_number VARCHAR(50) UNIQUE NOT NULL COMMENT '인허가번호 (고유키)',
     business_name VARCHAR(200) NOT NULL COMMENT '상호명',
     
     -- 주소

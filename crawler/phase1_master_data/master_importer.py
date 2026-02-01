@@ -44,6 +44,9 @@ class MasterImporter:
         if df.empty:
             print("⚠️ 저장할 데이터가 없습니다")
             return {'inserted': 0, 'updated': 0}
+            
+        # NaN을 None으로 변환 (MySQL 호환성)
+        df = df.where(pd.notnull(df), None)
         
         if not self.conn or not self.conn.is_connected():
             self.connect()
@@ -75,6 +78,18 @@ class MasterImporter:
         
         for idx, row in df.iterrows():
             try:
+                # 좌표 유효성 검사
+                lat_val = row.get('latitude')
+                lon_val = row.get('longitude')
+                
+                if pd.isna(lat_val) or pd.isna(lon_val) or lat_val is None or lon_val is None:
+                    # 좌표 없는 데이터는 스킵 (cafe_master의 lat/lon은 NOT NULL)
+                    errors += 1
+                    continue
+                    
+                lat = float(lat_val)
+                lon = float(lon_val)
+                
                 # 날짜 변환
                 opened_at = self._parse_date(row.get('opened_at'))
                 
@@ -83,8 +98,8 @@ class MasterImporter:
                     row.get('business_name'),
                     row.get('jibun_address'),
                     row.get('road_address'),
-                    float(row.get('latitude')),
-                    float(row.get('longitude')),
+                    lat,
+                    lon,
                     row.get('industry_code'),
                     row.get('industry_name'),
                     opened_at

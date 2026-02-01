@@ -91,7 +91,7 @@ const fetchKeywords = async () => {
 
 const submitReview = async () => {
     if (!localStorage.getItem('token')) return alert("로그인이 필요합니다.");
-    if (!newReview.value.author || !newReview.value.content) return alert("모든 필드를 입력해 주세요");
+    if (!newReview.value.content) return alert("리뷰 내용을 입력해 주세요");
     
     try {
         const formData = new FormData();
@@ -548,16 +548,12 @@ const filteredPhotos = computed(() => {
                 <!-- Review Form -->
                 <div class="p-4 border-t border-gray-100 bg-gray-50">
                     <form @submit.prevent="submitReview" class="space-y-3">
-                        <div class="flex gap-2 items-center">
-                            <input v-model="newReview.author" placeholder="닉네임" 
-                                   class="flex-1 bg-white rounded-lg px-3 py-2.5 text-sm border border-gray-200 focus:border-gray-400 focus:outline-none" required />
-                            <div class="flex gap-1 items-center text-xl">
-                                <span v-for="i in 5" :key="i" 
-                                     @click="newReview.rating = i" 
-                                     class="cursor-pointer transition-transform hover:scale-125" 
-                                     :class="[i <= newReview.rating ? 'opacity-100 animate-wiggle' : 'opacity-30 grayscale']"
-                                     :style="{ animationDelay: (i - 1) * 0.1 + 's' }">☕</span>
-                            </div>
+                        <div class="flex gap-1 items-center text-xl mb-2">
+                            <span v-for="i in 5" :key="i" 
+                                 @click="newReview.rating = i" 
+                                 class="cursor-pointer transition-transform hover:scale-125" 
+                                 :class="[i <= newReview.rating ? 'opacity-100 animate-wiggle' : 'opacity-30 grayscale']"
+                                 :style="{ animationDelay: (i - 1) * 0.1 + 's' }">☕</span>
                         </div>
                         
                         <textarea v-model="newReview.content" rows="3" placeholder="이 카페에 대한 솔직한 후기를 남겨주세요." 
