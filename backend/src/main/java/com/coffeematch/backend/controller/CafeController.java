@@ -27,8 +27,18 @@ public class CafeController {
     }
 
     @GetMapping
-    public List<Cafe> getCafes(@RequestParam(required = false) String keyword) {
-        return cafeService.getAllCafes(keyword);
+    public ResponseEntity<?> getCafes(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false) Double radius) {
+
+        if (latitude != null && longitude != null && radius != null) {
+            return ResponseEntity.ok(cafeService.getNearby(latitude, longitude, radius, page, size));
+        }
+        return ResponseEntity.ok(cafeService.getAllCafes(keyword, page, size));
     }
 
     @GetMapping("/{id}")

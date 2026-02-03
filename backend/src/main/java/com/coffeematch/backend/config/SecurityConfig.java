@@ -59,7 +59,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-                java.util.Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"));
+                java.util.Arrays.asList(
+                        "http://localhost:5173",
+                        "http://127.0.0.1:5173",
+                        "http://localhost:3000",
+                        "http://175.126.73.154",
+                        "http://175.126.73.154:80",
+                        "http://creama.co.kr",
+                        "http://www.creama.co.kr",
+                        "https://creama.co.kr",
+                        "https://www.creama.co.kr"));
         configuration.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(java.util.Arrays.asList("*"));
         configuration.setAllowCredentials(true);

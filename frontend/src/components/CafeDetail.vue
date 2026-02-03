@@ -245,10 +245,18 @@ onMounted(() => {
 });
 
 // Initialize Kakao Map
-const initMap = () => {
+const initMap = async () => {
     if (!cafe.value || !mapContainer.value) return;
+    
+    // Wait for Kakao SDK to load (max 10 seconds)
+    let attempts = 0;
+    while ((!window.kakao || !window.kakao.maps) && attempts < 20) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        attempts++;
+    }
+    
     if (!window.kakao || !window.kakao.maps) {
-        console.error('Kakao Maps SDK not loaded');
+        console.error('Kakao Maps SDK not loaded after waiting');
         return;
     }
 

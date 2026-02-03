@@ -52,11 +52,18 @@ public class CafeService {
         this.menuRepository = menuRepository;
     }
 
-    public List<Cafe> getAllCafes(String keyword) {
+    public org.springframework.data.domain.Page<Cafe> getAllCafes(String keyword, int page, int size) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
         if (keyword != null && !keyword.isEmpty()) {
-            return cafeRepository.findByNameContainingIgnoreCase(keyword);
+            return cafeRepository.findByNameContainingIgnoreCase(keyword, pageable);
         }
-        return cafeRepository.findAll();
+        return cafeRepository.findAll(pageable);
+    }
+
+    public org.springframework.data.domain.Page<Cafe> getNearby(Double latitude, Double longitude, Double radius,
+            int page, int size) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        return cafeRepository.findNearby(latitude, longitude, radius, pageable);
     }
 
     public CafeDetailDto getCafeDetails(String email, Long cafeId) {

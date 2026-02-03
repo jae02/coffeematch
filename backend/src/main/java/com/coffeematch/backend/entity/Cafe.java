@@ -29,7 +29,8 @@ public class Cafe {
     @Column(length = 50)
     private String businessType; // 카페, 베이커리, 제과점 등
 
-    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @org.hibernate.annotations.BatchSize(size = 100)
     private List<Menu> menus = new ArrayList<>();
 
     @OneToMany(mappedBy = "cafe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

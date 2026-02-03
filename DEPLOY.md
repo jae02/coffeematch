@@ -35,6 +35,36 @@ chmod +x ./docker/deploy.sh
 ./docker/deploy.sh jay02
 ```
 
+### 2.5️⃣ 데이터 마이그레이션 (최초 배포 시)
+로컬 DB의 카페 데이터를 프로덕션으로 이전합니다.
+
+**Windows:**
+```powershell
+# 1. 데이터 내보내기
+cd docker
+.\export_data.ps1
+
+# 2. VPS로 전송
+scp cafe_migration_data.sql root@175.126.73.154:/opt/coffeematch/docker/
+
+# 3. VPS에서 임포트
+ssh root@175.126.73.154
+cd /opt/coffeematch/docker
+docker exec -i creama-db mysql -uroot -p1234 coffeematch < cafe_migration_data.sql
+```
+
+**Mac / Linux:**
+```bash
+# 1. 데이터 내보내기
+cd docker
+chmod +x export_data.sh
+./export_data.sh
+
+# 2. VPS로 전송 및 임포트
+scp cafe_migration_data.sql root@175.126.73.154:/opt/coffeematch/docker/
+ssh root@175.126.73.154 "cd /opt/coffeematch/docker && docker exec -i creama-db mysql -uroot -p1234 coffeematch < cafe_migration_data.sql"
+```
+
 ### 3️⃣ VPS 배포 (Production Deploy)
 서버에 접속하여 최신 이미지를 받고 컨테이너를 재시작합니다.
 
